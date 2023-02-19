@@ -5,7 +5,7 @@ from app.users.controller.user_auth_controller import JWTClassicUserBearer,JWTSu
 
 
 
-user_router = APIRouter(tags=["users"], prefix="/api/users")
+user_router = APIRouter(tags=["Users"], prefix="/api/users")
 
 
 @user_router.post("/add-new-user", response_model=UserSchema)

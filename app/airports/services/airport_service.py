@@ -48,3 +48,30 @@ class AirportService:
                 return repository.delete_airport(airport_id)
         except Exception as e:
             raise e
+
+    @staticmethod
+    def read_airport_by_name(airport_name):
+        try:
+            with SessionLocal() as db:
+                repository = AirportRepository(db)
+                return repository.read_airport_by_name(airport_name)
+        except Exception as e:
+            raise e
+
+    @staticmethod
+    def read_all_airports_in_city(city):
+        try:
+            with SessionLocal() as db:
+                repository = AirportRepository(db)
+                return repository.read_airports_by_city(city)
+        except Exception as e:
+            raise e
+
+    @staticmethod
+    def read_all_airport_id_by_city(city):
+        try:
+            with SessionLocal() as db:
+                repository = AirportRepository(db)
+                return repository.read_airports_ids_by_city(city)
+        except Exception as e:
+            raise e

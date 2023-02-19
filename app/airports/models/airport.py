@@ -1,7 +1,7 @@
 from sqlalchemy import Column, String
 from uuid import uuid4
 from app.db import Base
-
+from sqlalchemy.orm import relationship
 
 class Airport(Base):
     __tablename__ = "airports"

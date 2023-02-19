@@ -25,13 +25,13 @@ class AirportRepository:
         airports = self.db.query(Airport).all()
         return airports
 
-    def read_airport_by_id(self, airport_id):
+    def read_airport_by_id(self, airport_id: str):
         airport = self.db.query(Airport).filter(Airport.airport_id == airport_id).first()
         if airport is None:
             raise AirportNotFoundException(f"Airport with provided ID: {airport_id} not found.", 400)
         return airport
 
-    def delete_airport(self, airport_id):
+    def delete_airport(self, airport_id: str):
         try:
             airport = self.db.query(Airport).filter(Airport.airport_id == airport_id).first()
             if airport is None:
@@ -44,6 +44,18 @@ class AirportRepository:
             raise e
 
 
-    def read_airport_by_name(self, airport_name):
+    def read_airport_by_name(self, airport_name: str):
         airport = self.db.query(Airport).filter(Airport.airport_name == airport_name).first()
         return airport
+
+    def read_airports_by_city(self, city: str):
+        airports = self.db.query(Airport).filter(Airport.city == city).all()
+        return airports
+
+    def read_airports_ids_by_city(self, city: str):
+        airports = self.db.query(Airport).filter(Airport.city == city).all()
+        airport_ids=[]
+        for airport in airports:
+            airport_id = airport.airport_id
+            airport_ids.append(airport_id)
+        return airport_ids

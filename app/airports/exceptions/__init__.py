@@ -1,1 +1,1 @@
-from .exceptions import *
+from .exceptions import AirportNotFoundException, AirportExceptionCode
