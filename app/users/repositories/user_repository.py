@@ -59,3 +59,7 @@ class UserRepository:
     def read_user_by_email(self, email: str):
         user = self.db.query(User).filter(User.email == email).first()
         return user
+
+    def read_user_id_by_email(self, email: str):
+        user = self.db.query(User).filter(User.email == email).first()
+        return user.id

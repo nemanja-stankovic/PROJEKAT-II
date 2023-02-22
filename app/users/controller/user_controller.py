@@ -1,7 +1,10 @@
 from sqlalchemy.exc import IntegrityError
-from app.users.servicies import UserServices, signJWT
+from app.users.servicies import UserServices
+from app.users.servicies.user_auth_handler_service import signClassicUserJWT, signSuperUserJWT
 from fastapi import HTTPException, Response
 from app.users.exceptions import UserInvalidePassword
+from app.flights.servicies import FlightService
+from app.tickets.servicies import TicketService
 
 class UserController:
     @staticmethod
@@ -27,10 +30,24 @@ class UserController:
     @staticmethod
     def login_user(email, password):
         try:
+
             user = UserServices.login_user(email, password)
+            user_id = UserServices.read_user_id_by_email(email)
+            user = UserServices.update_user_is_active(user_id, is_active=True)
             if user.is_superuser:
-                return signJWT(user.id, "super_user")
-            return signJWT(user.id, "classic_user")
+                return signSuperUserJWT(user_id)
+            return signClassicUserJWT(user.id)
+        except UserInvalidePassword as e:
+            raise HTTPException(status_code=e.code, detail=e.message)
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=str(e))
+
+    @staticmethod
+    def logout_user(email):
+        try:
+            user_id = UserServices.read_user_id_by_email(email)
+            return UserServices.update_user_is_active(user_id, is_active=False)
+
         except UserInvalidePassword as e:
             raise HTTPException(status_code=e.code, detail=e.message)
         except Exception as e:
@@ -64,3 +81,20 @@ class UserController:
         except Exception as e:
             raise HTTPException(status_code=500, detail=str(e))
 
+    @staticmethod
+    def reserve_flight_by_flight_id_and_class_number(flight_id, class_number):
+        try:
+            number_of_available_tickets = TicketService.read_number_of_available_tickets_by_flight_id(flight_id)
+            if number_of_available_tickets == 0:
+                raise HTTPException(status_code=400, detail="There is no available ticket for this flight")
+            else:
+                tickets = TicketService.read_tickets_by_flight_id(flight_id)
+                list_ticket = []
+                for ticket in tickets:
+                    ticket_id = ticket.ticket_id
+                    if (ticket.is_it_reserved == False):
+                        list_ticket.append(ticket)
+                        TicketService.update_is_it_reserved(ticket_id)
+                return list_ticket[0]
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=str(e))

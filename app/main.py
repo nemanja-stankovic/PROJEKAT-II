@@ -8,6 +8,8 @@ from app.users.routes import user_router
 from app.flight_routes.routes import flight_route_router
 from app.flights.routes import flight_router
 from app.tickets.routes import ticket_router
+from app.reservations.routes import reservation_router
+
 Base.metadata.create_all(bind=engine)
 
 
@@ -18,6 +20,8 @@ def init_app():
     app.include_router(user_router)
     app.include_router(flight_router)
     app.include_router(ticket_router)
+    app.include_router(reservation_router)
+
     return app
 
 

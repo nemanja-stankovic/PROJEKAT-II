@@ -22,16 +22,4 @@ class FlightSchemaIn(BaseModel):
     class Config:
         orm_mode = True
 
-class SearchedFlightSchema(BaseModel):
-    flight_id: UUID4
-    departure_time: datetime
-    arrival_time: datetime
-    airline: str
-    num_of_seats: int
-    route_id: str
-    from_city: str
-    to_city: str
 
-    class Config:
-        orm_mode = True
-        

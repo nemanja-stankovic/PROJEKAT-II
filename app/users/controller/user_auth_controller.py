@@ -22,16 +22,16 @@ class JWTSuperUserBearer(HTTPBearer):
         else:
             raise HTTPException(status_code=403, detail="Invalid authorization code.")
 
-    def verify_jwt(self, jwtoken: str) -> bool:
-        is_token_valid: bool = False
+
+    def verify_jwt(self, jwtoken: str) -> dict:
         try:
             payload = decodeSuperUserJWT(jwtoken)
         except:
             payload = None
         if payload:
-            is_token_valid = True
-        return is_token_valid
-
+            if payload.get("role") != None:
+                return {"valid": True, "role" : payload["role"]}
+        return {"valid": False}
 class JWTClassicUserBearer(HTTPBearer):
     def __init__(self, auto_error: bool = True):
         super(JWTClassicUserBearer, self).__init__(auto_error=auto_error)
@@ -47,15 +47,15 @@ class JWTClassicUserBearer(HTTPBearer):
         else:
             raise HTTPException(status_code=403, detail="Invalid authorization code.")
 
-    def verify_jwt(self, jwtoken: str) -> bool:
-        is_token_valid: bool = False
+    def verify_jwt(self, jwtoken: str) -> dict:
         try:
             payload = decodeClassicUserJWT(jwtoken)
         except:
             payload = None
         if payload:
-            is_token_valid = True
-        return is_token_valid
+            if payload.get("role") != None:
+                return {"valid": True, "role" : payload["role"]}
+        return {"valid": False}
 
 # class JWTBearer(HTTPBearer):
 #     def __init__(self, role:str, auto_error: bool = True):

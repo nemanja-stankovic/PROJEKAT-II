@@ -53,6 +53,32 @@ class FlightService:
                 return repository.read_flights_by_departure_date(departure_date)
         except Exception as e:
             raise e
+    @staticmethod
+    def read_flights_by_arrival_date(arrival_date):
+        try:
+            with SessionLocal() as db:
+                repository = FlightRepository(db)
+                return repository.read_flights_by_arrival_date(arrival_date)
+        except Exception as e:
+            raise e
+    @staticmethod
+    def read_flights_by_cities_and_date(from_city, to_city,departure_date):
+        try:
+            with SessionLocal() as db:
+                repository = FlightRepository(db)
+                return repository.read_flight_cities_and_date(from_city, to_city,departure_date)
+        except Exception as e:
+            raise e
+
+    @staticmethod
+    def read_available_flights_by_departure_date(departure_date):
+        try:
+            with SessionLocal() as db:
+                repository = FlightRepository(db)
+                return repository.read_available_flights_by_departure_date(departure_date)
+        except Exception as e:
+            raise e
+
 
     @staticmethod
     def delete_flight_by_id(flight_id):

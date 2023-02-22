@@ -70,3 +70,22 @@ class UserServices:
                 return user
             except Exception as e:
                 raise e
+
+    @staticmethod
+    def read_user_by_email(user_email: str):
+        try:
+            with SessionLocal() as db:
+                user_repository = UserRepository(db)
+                return user_repository.read_user_id_by_email(user_email)
+        except Exception as e:
+            raise e
+
+    @staticmethod
+    def read_user_id_by_email(user_email: str):
+        try:
+            with SessionLocal() as db:
+                user_repository = UserRepository(db)
+                user_id = user_repository.read_user_id_by_email(user_email)
+                return user_id
+        except Exception as e:
+            raise e

@@ -60,18 +60,28 @@ class RouteService:
             with SessionLocal() as db:
                 repository = RouteRepository(db)
                 airport_ids_lst_from = AirportService.read_all_airport_id_by_city(from_city)
+
                 list_route_ids_from = []
                 for airport_id in airport_ids_lst_from:
                     route_ids_from = repository.read_routes_ids_by_from_airport_id(airport_id)
                     for route_id in route_ids_from:
                         list_route_ids_from.append(route_id)
+
                 airport_ids_lst_to = AirportService.read_all_airport_id_by_city(to_city)
+
                 list_route_ids_to = []
                 for airport_id in airport_ids_lst_to:
-                    route_ids_to = repository.read_routes_ids_by_from_airport_id(airport_id)
+                    route_ids_to = repository.read_routes_ids_by_to_airport_id(airport_id)
                     for route_id in route_ids_to:
                         list_route_ids_to.append(route_id)
-                return list_route_ids_to+list_route_ids_from
+                result = []
+                for route_id_from in list_route_ids_from:
+                    for route_id_to in list_route_ids_to:
+                        if route_id_to == route_id_from:
+                            result.append(route_id_to)
+                set_result = set(result)
+                result = list(set_result)
+                return result
         except Exception as e:
             raise e
 
