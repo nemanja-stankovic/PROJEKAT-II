@@ -1,8 +1,7 @@
 from app.airports.services import AirportService
-"""""""This class is responsible for controlling the airport"""
+""""This class is responsible for controlling the airport"""
 from app.airports.exceptions import AirportExceptionCode, AirportNotFoundException
 from fastapi import HTTPException, Response, status
-
 
 
 class AirportController:
@@ -24,9 +23,9 @@ class AirportController:
             airport = AirportService.create_new_airport(airport_name, city, country)
             return airport
         except AirportExceptionCode as e:
-            raise HTTPException(status_code=e.code, detail=e.message)
+            raise HTTPException(status_code=e.code, detail=e.message) from e
         except Exception as e:
-            raise HTTPException(status_code=500, detail=str(e))
+            raise HTTPException(status_code=500, detail=str(e)) from e
 
     @staticmethod
     def get_all_airports():
@@ -50,9 +49,9 @@ class AirportController:
             airport = AirportService.read_airport_by_id(airport_id)
             return airport
         except AirportNotFoundException as e:
-            raise HTTPException(status_code=e.code, detail=e.message)
+            raise HTTPException(status_code=e.code, detail=e.message) from e
         except Exception as e:
-            raise HTTPException(status_code=500, detail=str(e))
+            raise HTTPException(status_code=500, detail=str(e)) from e
 
     @staticmethod
     def delete_airport_by_id(airport_id: str):
@@ -67,9 +66,9 @@ class AirportController:
             AirportService.delete_airport_by_id(airport_id)
             return Response(content=f"Airport with provided ID: {airport_id} deleted.", status_code=200)
         except AirportNotFoundException as e:
-            raise HTTPException(status_code=e.code, detail=e.message)
+            raise HTTPException(status_code=e.code, detail=e.message) from e
         except Exception as e:
-            raise HTTPException(status_code=500, detail=str(e))
+            raise HTTPException(status_code=500, detail=str(e)) from e
 
     @staticmethod
     def get_airport_by_name(airport_name: str):
@@ -83,11 +82,7 @@ class AirportController:
         airport = AirportService.read_airport_by_name(airport_name)
         if airport:
             return airport
-        else:
-            raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"Airport with airport name {airport_name} does not exist",
-        )
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"Airport with airport name {airport_name} does not exist")
 
     @staticmethod
     def get_all_airports_with_city(city: str):
@@ -101,8 +96,4 @@ class AirportController:
         airports = AirportService.read_all_airports_in_city(city)
         if bool(airports) is not False:
             return airports
-        else:
-            raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"There is no airport with airport city {city} ",
-        )
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"There is no airport with airport city {city} ")

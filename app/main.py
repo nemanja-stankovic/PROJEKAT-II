@@ -1,7 +1,5 @@
 import uvicorn
 from fastapi import FastAPI
-from starlette.responses import RedirectResponse
-
 from app.db.database import engine, Base
 from app.airports.routes import airport_router
 from app.users.routes import user_router
@@ -14,6 +12,10 @@ Base.metadata.create_all(bind=engine)
 
 
 def init_app():
+    """
+    It creates a FastAPI app and includes all the routers we've created
+    @returns The app is being returned.
+    """
     app = FastAPI()
     app.include_router(airport_router)
     app.include_router(flight_route_router)

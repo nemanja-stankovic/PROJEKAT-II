@@ -1,6 +1,8 @@
-from app.db.database import Base
-from sqlalchemy import Column, String, Boolean
 from uuid import uuid4
+from sqlalchemy import Column, String, Boolean
+from app.db.database import Base
+
+
 
 
 class User(Base):

@@ -1,23 +1,61 @@
+""" `ReservationSchema` is a class that inherits from `BaseModel`"""
 from pydantic import BaseModel, UUID4
-from app.users.schemas import UserSchema
-from app. tickets.schemas import TicketSchema
-from app.users.models import User
-from app.tickets.models import Ticket
+
 
 class ReservationSchema(BaseModel):
-    resevation_id: UUID4
+    """ReservationSchema` is a class that inherits from `BaseModel"""
+    reservation_id: UUID4
     ticket_id: str
     user_id: str
-    # users: User
-    # tickets: Ticket
+    def public_method_one(self):
+        """
+        A function definition.
+        """
+
+    def public_method_two(self):
+        """
+        A function definition.
+        """
     class Config:
+        """Config class"""
         orm_mode = True
+
+        def public_method_one(self):
+            """
+            A function definition.
+            """
+
+        def public_method_two(self):
+            """
+            A function definition.
+            """
+
 
 
 class ReservationSchemaIn(BaseModel):
+    """ReservationSchemaIn` is a class that inherits from `BaseModel"""
     ticket_id: str
     user_id: str
 
+    def public_method_one(self):
+        """
+        A function definition.
+        """
+
+    def public_method_two(self):
+        """
+        A function definition.
+        """
     class Config:
+        """Config class"""
         orm_mode = True
 
+        def public_method_one(self):
+            """
+            A function definition.
+            """
+
+        def public_method_two(self):
+            """
+            A function definition.
+            """

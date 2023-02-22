@@ -8,6 +8,7 @@ class ViewFlightService:
     def create_new_view_flight(flight_id: str, departure_time: str,arrival_time: str, airline, num_of_seats,
                            num_of_available_tickets_first_class: int, num_of_available_tickets_second_class: int,
                            price_first_class: float, price_second_class: float, from_city: str, to_city: str):
+        """ It creates a new view flight in the database  """
         try:
             with SessionLocal() as db:
                 repository = ViewFlightRepository(db)
@@ -20,6 +21,9 @@ class ViewFlightService:
 
     @staticmethod
     def sort_view_flights_by_price():
+        """
+        It sorts the flights by price.
+        """
         try:
             with SessionLocal() as db:
                 repository = ViewFlightRepository(db)
@@ -29,6 +33,10 @@ class ViewFlightService:
 
     @staticmethod
     def delete_view_flight():
+        """
+        *|MARCADOR_CURSOR|*
+        """
+
         try:
             with SessionLocal() as db:
                 repository = ViewFlightRepository(db)

@@ -3,3 +3,4 @@ good-names=
     i,
     e,
     db,
+max-line-length=140

@@ -1,6 +1,6 @@
+"""It creates a database connection and returns it to the caller"""
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
-
 from app.config import settings
 
 if settings.USE_TEST_DB:
@@ -22,6 +22,9 @@ Base = declarative_base()
 
 
 def get_db():
+    """
+    It creates a database connection and returns it to the caller
+    """
     db = SessionLocal()
     try:
         yield db

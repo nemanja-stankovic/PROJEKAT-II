@@ -5,10 +5,6 @@ from app.airports.schemas import AirportSchema, AirportSchemaIn
 airport_router = APIRouter(tags=["Airports"], prefix="/api/airports")
 
 
-
-
-
-
 @airport_router.post("/create-new-airport", response_model=AirportSchema)
 def create_new_airport(airport: AirportSchemaIn):
     return AirportController.create_new_airport(airport_name=airport.airport_name, city=airport.city, country=airport.country)

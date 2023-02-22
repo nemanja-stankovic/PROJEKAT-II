@@ -15,5 +15,24 @@ class ViewFlightSchema(BaseModel):
     from_city: str
     to_city: str
 
+    def public_method_one(self):
+        """
+        A function definition.
+        """
+
+    def public_method_two(self):
+        """
+        A function definition.
+        """
     class Config:
         orm_mode = True
+
+        def public_method_one(self):
+            """
+            A function definition.
+            """
+
+        def public_method_two(self):
+            """
+            A function definition.
+            """

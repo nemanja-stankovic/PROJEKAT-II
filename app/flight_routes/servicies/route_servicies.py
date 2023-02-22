@@ -10,6 +10,12 @@ class RouteService:
 
     @staticmethod
     def create_new_route(from_airport_id, to_airport_id):
+        """
+        It creates a new route in the database
+        @param from_airport_id - The ID of the airport that the route is departing from.
+        @param to_airport_id - The ID of the airport you want to fly to.
+        @returns The route object
+        """
         try:
             with SessionLocal() as db:
                 repository = RouteRepository(db)
@@ -20,6 +26,10 @@ class RouteService:
 
     @staticmethod
     def read_all_routes():
+        """
+        It reads all routes from the database
+        @returns A list of all the routes in the database.
+        """
         try:
             with SessionLocal() as db:
                 repository = RouteRepository(db)
@@ -29,6 +39,11 @@ class RouteService:
 
     @staticmethod
     def read_route_by_id(route_id):
+        """
+        It reads a route by id
+        @param route_id - The id of the route you want to read.
+        @returns A route object
+        """
         try:
             with SessionLocal() as db:
                 repository = RouteRepository(db)
@@ -38,6 +53,12 @@ class RouteService:
 
     @staticmethod
     def read_route_by_from_id(from_airport_id):
+        """
+        It takes an airport id as an argument and returns a list of routes that have that airport id as their
+        from_airport_id
+        @param from_airport_id - The ID of the airport you want to find routes from.
+        @returns A list of routes
+        """
         try:
             with SessionLocal() as db:
                 repository = RouteRepository(db)
@@ -47,6 +68,11 @@ class RouteService:
 
     @staticmethod
     def read_route_by_to_id(to_airport_id):
+        """
+        It takes an airport id as an argument, and returns a list of routes that have that airport id as their destination
+        @param to_airport_id - The id of the airport you want to fly to.
+        @returns A list of routes that have the to_airport_id
+        """
         try:
             with SessionLocal() as db:
                 repository = RouteRepository(db)
@@ -56,6 +82,13 @@ class RouteService:
 
     @staticmethod
     def read_all_route_ids_by_cities(from_city, to_city):
+        """
+        It takes two cities as input and returns a list of route ids that have a route from the first city to the second
+        city
+        @param from_city - The city where the flight is departing from.
+        @param to_city - The city you want to fly to.
+        @returns list of route_ids
+        """
         try:
             with SessionLocal() as db:
                 repository = RouteRepository(db)
@@ -88,6 +121,11 @@ class RouteService:
 
     @staticmethod
     def delete_route_by_id(route_id):
+        """
+        It deletes a route from the database by its id
+        @param route_id - The id of the route to be deleted.
+        @returns The route_id of the route that was deleted.
+        """
         try:
             with SessionLocal() as db:
                 repository = RouteRepository(db)
