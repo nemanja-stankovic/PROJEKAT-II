@@ -7,6 +7,12 @@ class ReservationController:
 
     @staticmethod
     def create_new_reservation(ticket_id: str, user_id: str):
+        """
+        It creates a new reservation
+        @param {str} ticket_id - str, user_id: str
+        @param {str} user_id - str - the user id of the user who is making the reservation
+        @returns A reservation object
+        """
         try:
             reservation = ReservationService.create_new_reservation(ticket_id, user_id)
 
