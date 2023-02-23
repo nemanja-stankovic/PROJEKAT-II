@@ -61,6 +61,10 @@ def explore_everywhere(departure_date, from_city):
 def user_explore_everywhere(email,password,departure_date, from_city):
     return FlightController.user_explore_everywhere(email,password, departure_date, from_city)
 
+@flight_router.get("/user-view-search-flights",response_model=list[UserViewFlightSchema])
+def user_view_searhed_flights(user: UserSchemaIn):
+    return FlightController.get_all_searched_flights_for_user(user.email, user.password)
+
 @flight_router.put("/update-ticket-price", response_model=list[TicketSchema])
 def update_ticket_price(flight_id, class_number, price):
     return TicketController.update_ticket_price(flight_id=flight_id, class_number=class_number, price=price)
@@ -69,4 +73,7 @@ def update_ticket_price(flight_id, class_number, price):
 def delete_flight_by_id(flight_id: str):
     return FlightController.delete_flight_by_id(flight_id)
 
+@flight_router.delete("/delete-user-view-searh-flight")
+def delete_user_view_search_flight_by_id(user: UserSchemaIn):
+    return FlightController.delete_all_user_view_flights_by_email_and_password(email=user.email,password=user.password)
 

@@ -39,7 +39,7 @@ def user_login(user: UserSchemaIn):
     """
     return UserController.login_user(user.email, user.password)
 
-@user_router.post("/logout")
+@user_router.post("/logout", dependencies=[Depends(JWTClassicUserBearer())])
 def user_logout(email: str):
     """
     `Logs out a user.`
@@ -48,7 +48,7 @@ def user_logout(email: str):
     """
     return UserController.logout_user(email)
 
-@user_router.get("/id", response_model=UserSchema)
+@user_router.get("/id", response_model=UserSchema, dependencies=[Depends(JWTSuperUserBearer())])
 def get_user_by_id(user_id: str):
     """
     `get_user_by_id` returns a user object given a user id
@@ -74,7 +74,7 @@ def delete_user_by_id(user_id: str):
     """
     return UserController.delete_user_by_id(user_id)
 
-@user_router.put("/update/is_active", response_model=UserSchema)
+@user_router.put("/update/is_active", response_model=UserSchema, dependencies=[Depends(JWTClassicUserBearer())])
 def update_user_is_active(user_id: str, is_active: bool):
     """
     `update_user` updates a user's is_active status
@@ -94,7 +94,7 @@ def reserve_flight_by_flight_id_and_class_number(flight_id, class_number, user_i
     """
     return UserController.reserve_flight_by_flight_id_and_class_number(flight_id,class_number, user_id)
 
-@user_router.put("/update/password", response_model=UserSchema)
+@user_router.put("/update/password", response_model=UserSchema, dependencies=[Depends(JWTClassicUserBearer())])
 def update_user_password(email: str, old_password: str, new_password: str):
     """
     `update_user_password` updates the password of a user

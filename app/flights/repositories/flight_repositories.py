@@ -123,13 +123,6 @@ class FlightRepository:
         return flights
 
 
-    # def read_available_flights_by_departure_date(self, departure_date: str):
-    #     flights = self.db.query(Flight).join(Ticket).all()
-    #     if bool(flights) is False:
-    #         raise FlightNotFoundException(f"Flight with provided departure_date: {departure_date} not found.", 400)
-    #     else:
-    #         return flights
-
     def delete_flight(self, flight_id: str):
         """
         It deletes a flight from the database

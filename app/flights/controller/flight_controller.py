@@ -153,30 +153,7 @@ class FlightController:
         except Exception as e:
             raise HTTPException(status_code=500, detail=str(e)) from e
 
-    # @staticmethod
-    # def search_flights_by_cities(from_city: str, to_city: str):
-    #     """It searches for flights by from_city and to_city, and returns a list of flights that match the search criteria
-    #     @param {str} from_city - str, to_city: str
-    #     @param {str} to_city - str, from_city: str
-    #     @returns A list of flights from the city of departure and the city of arrival"""
-    #     flights_from = FlightController.search_flights_by_from_city(from_city)
-    #     flights_to = FlightController.search_flights_by_to_city(to_city)
-    #     flights = []
-    #     for flight_from in flights_from:
-    #         for flight_to in flights_to:
-    #             if flight_from.route_id == flight_to.route_id:
-    #                 flights.append(flight_from)
-    #     list_searched_flights=[]
-    #     for flight in flights:
-    #         searched_flight=flight
-    #         setattr(searched_flight,"from_city",from_city)
-    #         setattr(searched_flight, "to_city", to_city)
-    #         list_searched_flights.append(searched_flight)
-    #
-    #     if len(list_searched_flights) >0:
-    #         return list_searched_flights
-    #     else:
-    #         raise HTTPException(status_code=400, detail=f"There is no flight from city {from_city} and to_city {to_city}")
+
 
     @staticmethod
     def search_flights_by_departure_date(departure_date):
@@ -405,3 +382,30 @@ class FlightController:
         except UserInvalidePassword as e:
             raise HTTPException(status_code=e.code, detail=e.message)
 
+    @staticmethod
+    def get_all_searched_flights_for_user(email: str, password: str):
+        try:
+            user = UserServices.login_user(email, password)
+            if user:
+                return UserViewFlightService.read_all_user_view_flights()
+            else:
+                raise HTTPException(status_code=400, detail="Email doesn't exist")
+        except UserInvalidePassword as e:
+            raise HTTPException(status_code=e.code, detail=e.message)
+
+    @staticmethod
+    def delete_all_user_view_flights():
+        try:
+            return UserViewFlightService.delete_all_user_view_flights()
+        except FlightExceptionCode as e:
+            raise HTTPException(status_code=e.code, detail=e.message)
+
+    @staticmethod
+    def delete_all_user_view_flights_by_email_and_password(email, password):
+        try:
+            user = UserServices.login_user(email, password)
+            if user:
+                user_id = user.id
+                return UserViewFlightService.delete_all_user_view_flights_by_user_id(user_id)
+        except FlightExceptionCode as e:
+            raise HTTPException(status_code=e.code, detail=e.message)

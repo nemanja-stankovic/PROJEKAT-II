@@ -161,8 +161,7 @@ class TicketController:
             number_of_tickets = TicketService.read_number_of_available_tickets_by_flight_id(flight_id)
             if number_of_tickets:
                 return number_of_tickets
-            else:
-                raise HTTPException(status_code=400, detail="There is no available ticket for this flight")
+            raise HTTPException(status_code=400, detail="There is no available ticket for this flight")
         except TicketNotFoundException as e:
             raise HTTPException(status_code=e.code, detail=e.message)
         except Exception as e:

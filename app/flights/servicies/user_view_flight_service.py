@@ -20,6 +20,15 @@ class UserViewFlightService:
             raise e
 
     @staticmethod
+    def read_all_user_view_flights():
+        try:
+            with SessionLocal() as db:
+                repository = UserViewFlightRepository(db)
+                return repository.read_all_user_view_flights()
+        except Exception as e:
+            raise e
+
+    @staticmethod
     def sort_user_view_flights_by_price():
         """
         It sorts the flights by price.
@@ -31,3 +40,29 @@ class UserViewFlightService:
         except Exception as e:
             raise e
 
+    @staticmethod
+    def delete_all_user_view_flights():
+        """
+        It deletes all the user_view_flights in the database
+        :return: A list of all the user_view_flights in the database.
+        """
+        try:
+            with SessionLocal() as db:
+                repository = UserViewFlightRepository(db)
+                return repository.delete_all_user_view_flights()
+        except Exception as e:
+            raise e
+
+    @staticmethod
+    def delete_all_user_view_flights_by_user_id(user_id: str):
+        """
+        It deletes all the user_view_flights in the database
+        :return: A list of all the user_view_flights in the database.
+        """
+        try:
+            with SessionLocal() as db:
+
+                repository = UserViewFlightRepository(db)
+                return repository.delete_all_user_view_flights_by_user_id(user_id)
+        except Exception as e:
+            raise e

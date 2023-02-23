@@ -154,8 +154,7 @@ class TicketService:
                 for ticket in tickets:
                     if ticket.is_it_reserved == False:
                         ticket_list.append(ticket)
-                if bool(ticket_list) == True:
-                    return len(tickets)
+                return len(tickets)
         except Exception as e:
             raise e
 

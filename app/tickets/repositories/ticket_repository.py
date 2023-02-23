@@ -55,8 +55,14 @@ class TicketRepository:
         @param {str} flight_id - str
         @returns A list of tickets
         """
-        tickets = self.db.query(Ticket).filter(Ticket.flight_id == flight_id).all()
-        return tickets
+        try:
+            tickets = self.db.query(Ticket).filter(Ticket.flight_id == flight_id).all()
+            if bool(tickets) is not False:
+                return tickets
+            raise TicketNotFoundException(code=400, message="There is no ticket for that flight")
+        except Exception as e:
+            raise e
+
     def read_tickets_by_class(self, class_number: int):
         """
         This function returns a list of all tickets in the database that have a class number equal to the class number
@@ -96,11 +102,6 @@ class TicketRepository:
         self.db.refresh(ticket)
         return ticket
 
-    # def read_price_by_class_and_flight_id(self, class_number: int, flight_id):
-    #     ticket = self.db.query(Ticket).filter(Ticket.class_number == class_number & Ticket.flight_id == flight_id).first()
-    #     if ticket is None:
-    #         raise TicketNotFoundException(f"Price with provided class_number: {class_number} and flight_id: {flight_id}not found.", 400)
-    #     return ticket.ticket_price
 
     def delete_ticket(self, ticket_id: str):
         """
