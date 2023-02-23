@@ -6,6 +6,10 @@ from app.tickets.servicies import TicketService
 from app.airports.services import AirportService
 from app.flight_routes.exceptions import RouteNotFoundException
 from app.flights.servicies import ViewFlightService
+from app.flights.servicies import UserViewFlightService
+from app.users.exceptions import UserInvalidePassword
+from app.users.servicies.user_services import UserServices
+
 def intersection(lst1, lst2):
     """
     It takes two lists, converts them to sets, takes the intersection of the sets, and then converts the result back to a
@@ -149,30 +153,30 @@ class FlightController:
         except Exception as e:
             raise HTTPException(status_code=500, detail=str(e)) from e
 
-    @staticmethod
-    def search_flights_by_cities(from_city: str, to_city: str):
-        """It searches for flights by from_city and to_city, and returns a list of flights that match the search criteria
-        @param {str} from_city - str, to_city: str
-        @param {str} to_city - str, from_city: str
-        @returns A list of flights from the city of departure and the city of arrival"""
-        flights_from = FlightController.search_flights_by_from_city(from_city)
-        flights_to = FlightController.search_flights_by_to_city(to_city)
-        flights = []
-        for flight_from in flights_from:
-            for flight_to in flights_to:
-                if flight_from.route_id == flight_to.route_id:
-                    flights.append(flight_from)
-        list_searched_flights=[]
-        for flight in flights:
-            searched_flight=flight
-            setattr(searched_flight,"from_city",from_city)
-            setattr(searched_flight, "to_city", to_city)
-            list_searched_flights.append(searched_flight)
-
-        if len(list_searched_flights) >0:
-            return list_searched_flights
-        else:
-            raise HTTPException(status_code=400, detail=f"There is no flight from city {from_city} and to_city {to_city}")
+    # @staticmethod
+    # def search_flights_by_cities(from_city: str, to_city: str):
+    #     """It searches for flights by from_city and to_city, and returns a list of flights that match the search criteria
+    #     @param {str} from_city - str, to_city: str
+    #     @param {str} to_city - str, from_city: str
+    #     @returns A list of flights from the city of departure and the city of arrival"""
+    #     flights_from = FlightController.search_flights_by_from_city(from_city)
+    #     flights_to = FlightController.search_flights_by_to_city(to_city)
+    #     flights = []
+    #     for flight_from in flights_from:
+    #         for flight_to in flights_to:
+    #             if flight_from.route_id == flight_to.route_id:
+    #                 flights.append(flight_from)
+    #     list_searched_flights=[]
+    #     for flight in flights:
+    #         searched_flight=flight
+    #         setattr(searched_flight,"from_city",from_city)
+    #         setattr(searched_flight, "to_city", to_city)
+    #         list_searched_flights.append(searched_flight)
+    #
+    #     if len(list_searched_flights) >0:
+    #         return list_searched_flights
+    #     else:
+    #         raise HTTPException(status_code=400, detail=f"There is no flight from city {from_city} and to_city {to_city}")
 
     @staticmethod
     def search_flights_by_departure_date(departure_date):
@@ -339,3 +343,65 @@ class FlightController:
             raise HTTPException(status_code=e.code, detail=e.message) from e
         except Exception as e:
             raise HTTPException(status_code=500, detail=str(e)) from e
+
+    @staticmethod
+    def user_explore_everywhere(email: str, password: str, departure_date: str, from_city: str):
+        try:
+            user = UserServices.login_user(email, password)
+            if user:
+                try:
+                    from_airport_id_lst = AirportService.read_all_airport_id_by_city(from_city)
+                    route_ids = []
+                    for from_id in from_airport_id_lst:
+                        route_lst = RouteService.read_route_by_from_id(from_id)
+                        for route in route_lst:
+                            route_id = route.route_id
+                            route_ids.append(route_id)
+                    flight_list_id_from = []
+                    for route_id in route_ids:
+                        flights_by_from = FlightService.read_flights_by_route_id(route_id)
+                        for flight in flights_by_from:
+                            flight_list_id_from.append(flight.flight_id)
+                    flight_list_id_date = []
+                    flights_by_date = FlightService.read_available_flights_by_departure_date(departure_date)
+                    for flight in flights_by_date:
+                        flight_list_id_date.append(flight.flight_id)
+                    flight_list_ids = intersection(flight_list_id_date, flight_list_id_from)
+                    for flight_id in flight_list_ids:
+                        flight = FlightService.read_flight_by_id(flight_id)
+                        departure_time = flight.departure_time
+                        arrival_time = flight.arrival_time
+                        airline = flight.airline
+                        num_of_seats = flight.num_of_seats
+                        num_of_available_tickets_first_class = TicketService.read_number_of_available_tickets_by_flight_id_and_class_number(
+                            flight_id, 1)
+                        num_of_available_tickets_second_class = TicketService.read_number_of_available_tickets_by_flight_id_and_class_number(
+                            flight_id, 2)
+                        if num_of_available_tickets_first_class == 0 and num_of_available_tickets_second_class == 0:
+                            continue
+                        price_first_class = TicketService.read_price_by_class_and_flight_id(1, flight_id)
+                        price_second_class = TicketService.read_price_by_class_and_flight_id(2, flight_id)
+                        from_city = from_city
+                        route_id = flight.route_id
+                        route = RouteService.read_route_by_id(route_id)
+                        airport_id = route.to_airport_id
+                        airport = AirportService.read_airport_by_id(airport_id)
+                        to_city = airport.city
+                        user_id = UserServices.read_user_id_by_email(email)
+                        UserViewFlightService.create_new_user_view_flight(departure_time, arrival_time, airline,
+                                                                 num_of_seats,
+                                                                 num_of_available_tickets_first_class,
+                                                                 num_of_available_tickets_second_class,
+                                                                 price_first_class,
+                                                                 price_second_class, from_city, to_city, user_id)
+                    user_view_flights = UserViewFlightService.sort_user_view_flights_by_price()
+                    return user_view_flights
+                except FlightNotFoundException as e:
+                    raise HTTPException(status_code=e.code, detail=e.message) from e
+                except Exception as e:
+                    raise HTTPException(status_code=500, detail=str(e)) from e
+            else:
+                raise HTTPException(status_code=400, detail="Email doesn't exist")
+        except UserInvalidePassword as e:
+            raise HTTPException(status_code=e.code, detail=e.message)
+

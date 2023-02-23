@@ -1,8 +1,9 @@
 from fastapi import APIRouter
 from app.flights.controller import FlightController
 from app.tickets.controller import TicketController
-from app.flights.schemas import FlightSchema, FlightSchemaIn, ViewFlightSchema
+from app.flights.schemas import FlightSchema, FlightSchemaIn, ViewFlightSchema, UserViewFlightSchema
 from app.tickets.schemas import TicketSchema
+from app.users.schemas import UserSchemaIn
 
 flight_router = APIRouter(tags=["Flights"], prefix="/api/flights")
 
@@ -12,12 +13,6 @@ def create_new_flight(flight: FlightSchemaIn):
     return FlightController.create_new_flight(departure_time=flight.departure_time, arrival_time=flight.arrival_time,
                                               num_of_seats=flight.num_of_seats, route_id=flight.route_id,
                                               airline=flight.airline)
-
-# @flight_router.get("/searche-flight-by-cities", response_model=list[SearchedFlightSchema]) #ne radi
-# def search_flights_by_cities(from_city, to_city):
-#     flights = FlightController.search_flights_by_cities(from_city, to_city)
-#     return flights
-
 
 @flight_router.get("/get-flight-by-id", response_model=FlightSchema)
 def get_flight_by_id(flight_id: str):
@@ -61,6 +56,10 @@ def search_flights_by_cities_and_dates(from_city, to_city,departure_date, arriva
 @flight_router.get("/explore-everywhere", response_model=list[ViewFlightSchema])
 def explore_everywhere(departure_date, from_city):
     return FlightController.explore_everywhere(departure_date, from_city)
+
+@flight_router.get("/user-explore-everywhere",response_model=list[UserViewFlightSchema])
+def user_explore_everywhere(email,password,departure_date, from_city):
+    return FlightController.user_explore_everywhere(email,password, departure_date, from_city)
 
 @flight_router.put("/update-ticket-price", response_model=list[TicketSchema])
 def update_ticket_price(flight_id, class_number, price):

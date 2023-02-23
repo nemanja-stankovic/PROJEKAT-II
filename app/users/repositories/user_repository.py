@@ -88,14 +88,36 @@ class UserRepository:
         except Exception as e:
             raise e
 
+    def update_user_password(self, email: str, password: str):
+        """
+        It updates the user's password in the database
+
+        :param email: str
+        :type email: str
+        :return: The user object is being returned.
+        """
+        try:
+            user = self.db.query(User).filter(User.email == email).first()
+            user.password = password
+            self.db.add(user)
+            self.db.commit()
+            self.db.refresh(user)
+            return user
+        except Exception as e:
+            raise e
+
     def read_user_by_email(self, email: str):
         """
         It returns the first user in the database whose email matches the email passed in as an argument
         @param {str} email - str
         @returns The user object
         """
-        user = self.db.query(User).filter(User.email == email).first()
-        return user
+        try:
+            user = self.db.query(User).filter(User.email == email).first()
+            if user:
+                return user
+        except Exception as e:
+            raise e
 
     def read_user_id_by_email(self, email: str):
         """
@@ -103,5 +125,10 @@ class UserRepository:
         @param {str} email - str
         @returns The user id.
         """
-        user = self.db.query(User).filter(User.email == email).first()
-        return user.id
+        try:
+            user = self.db.query(User).filter(User.email == email).first()
+            if user:
+                return user.id
+        except Exception as e:
+            raise e
+

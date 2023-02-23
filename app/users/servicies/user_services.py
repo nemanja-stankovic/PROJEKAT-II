@@ -1,8 +1,5 @@
-
 import hashlib
-
 from app.users.repositories.user_repository import UserRepository
-
 from app.db.database import SessionLocal
 from app.users.exceptions import UserInvalidePassword
 
@@ -90,6 +87,27 @@ class UserServices:
                 return user_repository.update_user_is_active(user_id, is_active)
             except Exception as e:
                 raise e
+    @staticmethod
+    def update_user_password(email: str, old_password: str, new_password: str):
+        """
+        It takes an email and password as arguments, and updates the password of the user with the given email
+
+        :param email: str
+        :type email: str
+        :param password: str
+        :type password: str
+        :return: The user_repository.update_user_password(email,password) is returning the
+        user_repository.update_user_password(email,password)
+        """
+        with SessionLocal() as db:
+            try:
+                user_repository = UserRepository(db)
+                user = user_repository.read_user_by_email(email)
+                hashed_password = hashlib.sha256(bytes(new_password, "utf-8")).hexdigest()
+                if hashlib.sha256(bytes(old_password, "utf-8")).hexdigest() == user.password:
+                    return user_repository.update_user_password(email, hashed_password)
+            except Exception as e:
+                raise e
 
     @staticmethod
     def login_user(email: str, password: str):
@@ -103,8 +121,9 @@ class UserServices:
             try:
                 user_repository = UserRepository(db)
                 user = user_repository.read_user_by_email(email)
-                if hashlib.sha256(bytes(password, "utf-8")).hexdigest() != user.password:
-                    raise UserInvalidePassword(message="Invalid password for user", code=401)
+                if user:
+                    if hashlib.sha256(bytes(password, "utf-8")).hexdigest() != user.password:
+                        raise UserInvalidePassword(message="Invalid password for user", code=401)
                 return user
             except Exception as e:
                 raise e
@@ -119,7 +138,7 @@ class UserServices:
         try:
             with SessionLocal() as db:
                 user_repository = UserRepository(db)
-                return user_repository.read_user_id_by_email(user_email)
+                return user_repository.read_user_by_email(user_email)
         except Exception as e:
             raise e
 

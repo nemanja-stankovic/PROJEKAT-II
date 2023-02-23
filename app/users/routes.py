@@ -75,7 +75,7 @@ def delete_user_by_id(user_id: str):
     return UserController.delete_user_by_id(user_id)
 
 @user_router.put("/update/is_active", response_model=UserSchema)
-def update_user(user_id: str, is_active: bool):
+def update_user_is_active(user_id: str, is_active: bool):
     """
     `update_user` updates a user's is_active status
     @param {str} user_id - str
@@ -93,3 +93,17 @@ def reserve_flight_by_flight_id_and_class_number(flight_id, class_number, user_i
     @returns A list of all the flights that are available for the given date.
     """
     return UserController.reserve_flight_by_flight_id_and_class_number(flight_id,class_number, user_id)
+
+@user_router.put("/update/password", response_model=UserSchema)
+def update_user_password(email: str, old_password: str, new_password: str):
+    """
+    `update_user_password` updates the password of a user
+
+    :param email: str
+    :type email: str
+    :param password: str
+    :type password: str
+    :return: A boolean value
+    """
+
+    return UserController.update_user_password(email, old_password, new_password)

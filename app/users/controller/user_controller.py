@@ -125,6 +125,22 @@ class UserController:
             raise HTTPException(status_code=500, detail=str(e)) from e
 
     @staticmethod
+    def update_user_password(email: str, old_password: str, new_password:str):
+        """
+        It updates the password of a user if the user is active
+
+        :param email: str, password: str
+        :type email: str
+        :param password: str
+        :type password: str
+        """
+        user = UserServices.update_user_password(email, old_password, new_password)
+        if user is not None:
+            return user
+        raise HTTPException(status_code=400, detail="Incorrect username or password")
+
+
+    @staticmethod
     def reserve_flight_by_flight_id_and_class_number(flight_id, class_number, user_id):
         """
         It reads the number of available tickets for a given flight, and if there are no available tickets, it raises an
