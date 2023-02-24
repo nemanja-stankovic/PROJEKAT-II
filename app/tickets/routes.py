@@ -1,12 +1,12 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 from app.tickets.controller import TicketController
 from app.tickets.schemas import TicketSchema, TicketSchemaIn
-
+from app.users.controller.user_auth_controller import JWTSuperUserBearer, JWTClassicUserBearer
 
 ticket_router = APIRouter(tags=["Tickets"], prefix="/api/tickets")
 
 
-@ticket_router.post("/create-new-ticket", response_model=TicketSchema)
+@ticket_router.post("/create-new-ticket", response_model=TicketSchema, dependencies=[Depends(JWTSuperUserBearer())])
 def create_new_ticket(ticket: TicketSchemaIn):
     """
     It creates a new ticket
@@ -15,7 +15,7 @@ def create_new_ticket(ticket: TicketSchemaIn):
     """
     return TicketController.create_new_ticket(class_number=ticket.class_number, ticket_price=ticket.ticket_price,flight_id=ticket.flight_id, is_it_reserved=ticket.is_it_reserved)
 
-@ticket_router.post("/create-n-tickets", response_model=list[TicketSchema])
+@ticket_router.post("/create-n-tickets", response_model=list[TicketSchema], dependencies=[Depends(JWTSuperUserBearer())])
 def create_n_tickets(number_of_tickets: int,ticket: TicketSchemaIn):
     """
     It creates n tickets for a flight.
@@ -25,7 +25,7 @@ def create_n_tickets(number_of_tickets: int,ticket: TicketSchemaIn):
     """
     return TicketController.create_n_tickets(number_of_tickets=number_of_tickets,class_number=ticket.class_number, ticket_price=ticket.ticket_price,flight_id=ticket.flight_id, is_it_reserved=ticket.is_it_reserved)
 
-@ticket_router.post("/create-all-tickets-for-flight", response_model=list[TicketSchema])
+@ticket_router.post("/create-all-tickets-for-flight", response_model=list[TicketSchema], dependencies=[Depends(JWTSuperUserBearer())])
 def create_all_tickets_for_flight(flight_id: str,ticket_price: str):
     """
     Create all tickets for flight by flight id
@@ -36,7 +36,7 @@ def create_all_tickets_for_flight(flight_id: str,ticket_price: str):
     return TicketController.create_all_tickets_for_flight_by_flight_id(flight_id=flight_id, ticket_price=ticket_price)
 
 
-@ticket_router.get("/get-all-tickets", response_model=list[TicketSchema])
+@ticket_router.get("/get-all-tickets", response_model=list[TicketSchema], dependencies=[Depends(JWTSuperUserBearer())])
 def get_all_tickets():
     """
     It returns a list of all the tickets in the database
@@ -45,7 +45,7 @@ def get_all_tickets():
     tickets = TicketController.get_all_tickets()
     return tickets
 
-@ticket_router.get("/get-ticket-by-id", response_model=TicketSchema)
+@ticket_router.get("/get-ticket-by-id", response_model=TicketSchema, dependencies=[Depends(JWTSuperUserBearer())])
 def get_ticket_by_id(ticket_id: str):
     """
     `get_ticket_by_id` returns a ticket object given a ticket id
@@ -55,7 +55,7 @@ def get_ticket_by_id(ticket_id: str):
     return TicketController.get_ticket_by_id(ticket_id)
 
 
-@ticket_router.delete("/delete-flight")
+@ticket_router.delete("/delete-flight", dependencies=[Depends(JWTSuperUserBearer())])
 def delete_ticket_by_id(ticket_id: str):
     """
     `Delete a ticket by id.`

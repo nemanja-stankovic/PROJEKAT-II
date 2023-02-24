@@ -1,12 +1,12 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 from app.flight_routes.controller import RouteController
 from app.flight_routes.schemas import RouteSchema, RouteSchemaIn
-
+from app.users.controller.user_auth_controller import JWTSuperUserBearer
 
 flight_route_router = APIRouter(tags=["Flight routes"], prefix="/api/flight-routes")
 
 
-@flight_route_router.post("/create-new-route", response_model=RouteSchema)
+@flight_route_router.post("/create-new-route", response_model=RouteSchema, dependencies=[Depends(JWTSuperUserBearer())])
 def create_new_route(route: RouteSchemaIn):
     """
     "Create a new route from the given airport to the given airport."
@@ -50,7 +50,7 @@ def get_route_by_id(route_id: str):
     return RouteController.get_route_by_id(route_id)
 
 
-@flight_route_router.delete("/delete-route")
+@flight_route_router.delete("/delete-route", dependencies=[Depends(JWTSuperUserBearer())])
 def delete_route_by_id(route_id: str):
     """
     Delete a route by id

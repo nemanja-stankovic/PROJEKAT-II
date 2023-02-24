@@ -1,11 +1,12 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 from app.reservations.schemas import ReservationSchema, ReservationSchemaIn
 from app.reservations.controller import ReservationController
+from app.users.controller.user_auth_controller import JWTSuperUserBearer
 
 
 reservation_router = APIRouter(tags=["Reservations"], prefix="/api/reservations")
 
-@reservation_router.post("/create-new-reservation")
+@reservation_router.post("/create-new-reservation", dependencies=[Depends(JWTSuperUserBearer())])
 def create_new_reservation(reservation: ReservationSchemaIn):
     """
     > Create a new reservation for a ticket
@@ -14,7 +15,7 @@ def create_new_reservation(reservation: ReservationSchemaIn):
     """
     return ReservationController.create_new_reservation(ticket_id=reservation.ticket_id, user_id=reservation.user_id)
 
-@reservation_router.get("/get-all-reservations", response_model=list[ReservationSchema])
+@reservation_router.get("/get-all-reservations", response_model=list[ReservationSchema], dependencies=[Depends(JWTSuperUserBearer())])
 def get_all_reservations():
     """
     This function returns a list of all reservations in the database
@@ -23,7 +24,7 @@ def get_all_reservations():
     reservations = ReservationController.get_all_reservations()
     return reservations
 
-@reservation_router.get("/get-reservation-by-id", response_model=ReservationSchema)
+@reservation_router.get("/get-reservation-by-id", response_model=ReservationSchema, dependencies=[Depends(JWTSuperUserBearer())])
 def get_reservation_by_id(reservation_id: str):
     """
     `Get a reservation by its id.`
@@ -32,7 +33,7 @@ def get_reservation_by_id(reservation_id: str):
     """
     return ReservationController.get_reservation_by_id(reservation_id)
 
-@reservation_router.delete("/delete-reservation")
+@reservation_router.delete("/delete-reservation", dependencies=[Depends(JWTSuperUserBearer())])
 def delete_reservation(reservation_id: str):
     """
     `Delete a reservation by id.`
