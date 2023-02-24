@@ -39,14 +39,20 @@ class RouteController:
         return routes
 
     @staticmethod
-    def get_all_route_ids_by_city(city):
+    def get_all_route_ids_by_from_city(city):
         """
         This function returns a list of all route ids for a given city
         @param city - The city that the route is in.
         @returns A list of route ids
         """
-        route_ids = RouteService.read_all_route_ids_by_city(city)
-        return route_ids
+        routes= RouteService.read_all_routes()
+        list_route_ids = []
+        for route in routes:
+            airport_id = route.from_airport_id
+            airport = AirportService.read_airport_by_id(airport_id)
+            if airport.city ==city:
+                list_route_ids.append(route.route_id)
+        return list_route_ids
 
     @staticmethod
     def get_route_by_id(route_id: str):

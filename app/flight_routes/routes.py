@@ -29,13 +29,13 @@ def get_all_routes():
     return routes
 
 @flight_route_router.get("/get-all-route-ids-by-city", response_model=list)
-def get_all_route_ids_by_city(city):
+def get_all_route_ids_by_city(city: str):
     """
     This function returns a list of all route ids for a given city
     @param city - The city you want to get the route ids for.
     @returns A list of route ids
     """
-    route_ids = RouteController.get_all_route_ids_by_city(city)
+    route_ids = RouteController.get_all_route_ids_by_from_city(city)
     return route_ids
 
 
